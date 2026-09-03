@@ -1,12 +1,14 @@
 from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from shared.models import QuoteRequest
 from web_app.quote_client import QuoteClient, QuoteClientError, default_client
 from web_app.schemas import GenerateQuoteRequest, GenerateQuoteResponse
+from web_app.config import settings
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -14,6 +16,13 @@ app = FastAPI(
     title="Commission Quote App",
     description="Staff app for generating commission quotes via the vendor API.",
     version="1.0.0",
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[origin.strip() for origin in settings.allowed_origins.split(",") if origin.strip()],
+    allow_methods=["POST", "GET"],
+    allow_headers=["Content-Type"],
 )
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")

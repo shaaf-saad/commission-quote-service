@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
+from functools import lru_cache
 
 import httpx
 
@@ -19,19 +20,22 @@ class QuoteClient:
     api_key: str
     timeout_seconds: float
     transport: httpx.BaseTransport | None = None
+    _client: httpx.Client = field(init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        self._client = httpx.Client(
+            base_url=self.base_url,
+            timeout=self.timeout_seconds,
+            transport=self.transport,
+        )
 
     def create_quote(self, request: QuoteRequest) -> QuoteResponse:
         try:
-            with httpx.Client(
-                base_url=self.base_url,
-                timeout=self.timeout_seconds,
-                transport=self.transport,
-            ) as client:
-                response = client.post(
-                    "/quotes",
-                    json=request.model_dump(mode="json"),
-                    headers={"api-key": self.api_key},
-                )
+            response = self._client.post(
+                "/quotes",
+                json=request.model_dump(mode="json"),
+                headers={"api-key": self.api_key},
+            )
         except httpx.TimeoutException as exc:
             raise QuoteClientError(
                 "The Commission Quote API timed out. Please try again.",
@@ -68,6 +72,7 @@ def _extract_detail(response: httpx.Response) -> str | None:
     return None
 
 
+@lru_cache(maxsize=1)
 def default_client() -> QuoteClient:
     return QuoteClient(
         base_url=settings.vendor_api_url,

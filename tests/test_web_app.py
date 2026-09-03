@@ -32,6 +32,15 @@ def test_web_app_validation_rejects_bad_term():
     assert response.status_code == 422
 
 
+def test_web_app_validation_rejects_amount_with_more_than_two_decimals():
+    client = TestClient(app)
+    response = client.post(
+        "/api/quotes",
+        json={"loanAmount": "1000.001", "loanTermInMonths": 12, "riskBand": "A"},
+    )
+    assert response.status_code == 422
+
+
 def test_web_app_success_maps_vendor_response():
     def handler(request: httpx.Request) -> httpx.Response:
         assert request.headers.get("api-key") == "test-key"
