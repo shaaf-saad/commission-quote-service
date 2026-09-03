@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Commission Quote</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="header">
+        <p class="eyebrow">Lending Platform</p>
+        <h1>Commission Quote</h1>
+        <p class="lede">
+          Enter loan details to generate a commission quote from the vendor API.
+        </p>
+      </header>
+
+      <main class="layout">
+        <form id="quote-form" class="card" novalidate>
+          <h2>Loan details</h2>
+
+          <div class="field">
+            <label for="loanAmount">Loan amount (AUD)</label>
+            <input
+              id="loanAmount"
+              name="loanAmount"
+              type="number"
+              inputmode="decimal"
+              min="0.01"
+              max="10000000"
+              step="0.01"
+              required
+              placeholder="250000"
+            />
+            <p class="hint">Must be greater than 0, up to 10,000,000.</p>
+          </div>
+
+          <div class="field">
+            <label for="loanTermInMonths">Loan term (months)</label>
+            <input
+              id="loanTermInMonths"
+              name="loanTermInMonths"
+              type="number"
+              inputmode="numeric"
+              min="1"
+              max="360"
+              step="1"
+              required
+              placeholder="360"
+            />
+            <p class="hint">Whole months between 1 and 360.</p>
+          </div>
+
+          <div class="field">
+            <label for="riskBand">Risk band</label>
+            <select id="riskBand" name="riskBand" required>
+              <option value="" disabled selected>Select a risk band</option>
+              <option value="A">A — lowest risk</option>
+              <option value="B">B — moderate</option>
+              <option value="C">C — elevated</option>
+              <option value="D">D — highest risk</option>
+            </select>
+          </div>
+
+          <p id="form-error" class="error" role="alert" hidden></p>
+
+          <button id="submit-btn" type="submit">Generate Quote</button>
+        </form>
+
+        <section class="card result" aria-live="polite">
+          <h2>Quote result</h2>
+          <div id="result-idle" class="idle">
+            Submit the form to generate a quote.
+          </div>
+          <div id="result-loading" class="loading" hidden>
+            <span class="spinner" aria-hidden="true"></span>
+            Requesting quote from the vendor…
+          </div>
+          <div id="result-error" class="banner error-banner" hidden></div>
+          <dl id="result-success" class="quote" hidden>
+            <div>
+              <dt>Quote ID</dt>
+              <dd id="out-quoteId"></dd>
+            </div>
+            <div>
+              <dt>Commission rate</dt>
+              <dd id="out-commissionRate"></dd>
+            </div>
+            <div>
+              <dt>Total commission</dt>
+              <dd id="out-totalCommission"></dd>
+            </div>
+            <div>
+              <dt>Loan</dt>
+              <dd id="out-loanSummary"></dd>
+            </div>
+          </dl>
+        </section>
+      </main>
+    </div>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
