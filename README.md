@@ -195,7 +195,7 @@ The React UI can also be deployed to GitHub Pages using `.github/workflows/deplo
 
 GitHub Pages only hosts static files, so the FastAPI BFF and vendor API must be deployed separately. Set the repository variable `VITE_API_BASE_URL` to the public BFF URL, for example `https://api.example.com`, and add the Pages origin to the BFF's `ALLOWED_ORIGINS`, for example `https://your-user.github.io` or `https://your-user.github.io/commission-quote-service`.
 
-If `VITE_API_BASE_URL` is not configured, the Pages workflow enables a clearly labeled interactive demo mode. It uses the same rate formula in the browser for presentation purposes, but does not call the vendor API. Configure the variable when a public BFF is available to switch the page to live mode.
+If `VITE_API_BASE_URL` is not configured, the Pages workflow enables a clearly labeled interactive demo mode with the same `0.5` (50%) simulated failure rate used for local demonstrations. It uses the same rate formula in the browser for presentation purposes, but does not call the vendor API. Configure the variable when a public BFF is available to switch the page to live mode.
 
 The vendor API key remains private because it is held by the BFF and is never included in the React build.
 

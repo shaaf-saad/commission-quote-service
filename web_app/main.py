@@ -1,6 +1,7 @@
 from pathlib import Path
+from uuid import uuid4
 
-from fastapi import Depends, FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -23,9 +24,19 @@ app.add_middleware(
     allow_origins=[origin.strip() for origin in settings.allowed_origins.split(",") if origin.strip()],
     allow_methods=["POST", "GET"],
     allow_headers=["Content-Type"],
+    expose_headers=["X-Correlation-ID"],
 )
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
+
+@app.middleware("http")
+async def add_correlation_id(request: Request, call_next) -> Response:
+    correlation_id = str(uuid4())
+    request.state.correlation_id = correlation_id
+    response = await call_next(request)
+    response.headers["X-Correlation-ID"] = correlation_id
+    return response
 
 
 def get_quote_client() -> QuoteClient:

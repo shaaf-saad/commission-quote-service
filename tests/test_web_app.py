@@ -1,4 +1,5 @@
 import json
+from uuid import UUID
 
 import httpx
 from fastapi.testclient import TestClient
@@ -80,7 +81,11 @@ def test_web_app_surfaces_vendor_outage():
         json={"loanAmount": "10000.00", "loanTermInMonths": 24, "riskBand": "A"},
     )
     assert response.status_code == 502
-    assert "unavailable" in response.json()["detail"].lower()
+    detail = response.json()["detail"]
+    assert "unavailable" in detail.lower()
+    assert "vendor" not in detail.lower()
+    assert "Reference ID" not in detail
+    assert UUID(response.headers["X-Correlation-ID"])
 
 
 def test_web_app_handles_timeout():
@@ -93,4 +98,8 @@ def test_web_app_handles_timeout():
         json={"loanAmount": "10000.00", "loanTermInMonths": 24, "riskBand": "A"},
     )
     assert response.status_code == 504
-    assert "timed out" in response.json()["detail"].lower()
+    detail = response.json()["detail"]
+    assert "took too long" in detail.lower()
+    assert "vendor" not in detail.lower()
+    assert "Reference ID" not in detail
+    assert UUID(response.headers["X-Correlation-ID"])

@@ -38,38 +38,25 @@ class QuoteClient:
             )
         except httpx.TimeoutException as exc:
             raise QuoteClientError(
-                "The Commission Quote API timed out. Please try again.",
+                "The quote service took too long to respond. Please try again.",
                 status_code=504,
             ) from exc
         except httpx.RequestError as exc:
             raise QuoteClientError(
-                "Unable to reach the Commission Quote API. Is the vendor service running?",
+                "The quote service is temporarily unavailable. Please try again.",
                 status_code=503,
             ) from exc
 
         if response.status_code == 401:
-            raise QuoteClientError("Vendor rejected the request: invalid API key.", status_code=502)
+            raise QuoteClientError("The quote service could not authenticate the request.", status_code=502)
         if response.status_code == 422:
-            raise QuoteClientError("Vendor rejected the loan details as invalid.", status_code=400)
+            raise QuoteClientError("The quote service could not process these loan details.", status_code=400)
         if response.status_code >= 500:
-            detail = _extract_detail(response) or "The Commission Quote API failed. Please retry."
-            raise QuoteClientError(detail, status_code=502)
+            raise QuoteClientError("The quote service is temporarily unavailable. Please try again.", status_code=502)
         if response.status_code >= 400:
-            detail = _extract_detail(response) or "Quote generation failed."
-            raise QuoteClientError(detail, status_code=response.status_code)
+            raise QuoteClientError("The quote could not be generated. Please check the details and try again.", status_code=response.status_code)
 
         return QuoteResponse.model_validate(response.json())
-
-
-def _extract_detail(response: httpx.Response) -> str | None:
-    try:
-        payload = response.json()
-    except ValueError:
-        return None
-    detail = payload.get("detail")
-    if isinstance(detail, str):
-        return detail
-    return None
 
 
 @lru_cache(maxsize=1)

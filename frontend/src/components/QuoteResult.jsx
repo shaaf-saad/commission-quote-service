@@ -2,11 +2,11 @@ const money = new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD
 
 export default function QuoteResult({ quote, error, isPending }) {
   if (isPending) {
-    return <div className="flex min-h-80 flex-col items-center justify-center text-center"><div className="mb-5 h-10 w-10 animate-spin rounded-full border-2 border-slate-700 border-t-amber-300" /><p className="font-medium text-white">Calculating your quote</p><p className="mt-2 text-sm text-slate-400">Contacting the Commission Quote API...</p></div>
+    return <div className="flex min-h-80 flex-col items-center justify-center text-center"><div className="mb-5 h-10 w-10 animate-spin rounded-full border-2 border-slate-700 border-t-amber-300" /><p className="font-medium text-white">Calculating your quote</p><p className="mt-2 text-sm text-slate-400">Processing your application...</p></div>
   }
 
   if (error) {
-    return <div className="flex min-h-80 flex-col justify-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-rose-300">Request failed</p><h2 className="mt-3 text-2xl font-semibold text-white">The quote could not be generated</h2><p className="mt-3 leading-7 text-slate-400">{error.message}</p><p className="mt-6 text-sm text-slate-500">Check the vendor service and try again.</p></div>
+    return <div className="flex min-h-80 flex-col justify-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-rose-300">Request failed</p><h2 className="mt-3 text-2xl font-semibold text-white">The quote could not be generated</h2><p className="mt-3 leading-7 text-slate-400">{error.message}</p>{error.referenceId && <p className="mt-6 border-t border-white/10 pt-4 text-sm text-slate-500">Reference ID <span className="ml-2 font-mono text-slate-300">{error.referenceId}</span></p>}<p className="mt-3 text-sm text-slate-500">Please try again. Contact support if the issue continues.</p></div>
   }
 
   if (!quote) {

@@ -44,7 +44,7 @@ export default function QuoteForm({ onSubmit, isPending }) {
       <div>
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-amber-300">Loan profile</p>
         <h2 className="mt-2 text-2xl font-semibold text-white">Build a quote</h2>
-        <p className="mt-2 text-sm leading-6 text-slate-400">Provide the application details and we will request a vendor calculation.</p>
+        <p className="mt-2 text-sm leading-6 text-slate-400">Provide the application details and we will calculate your quote.</p>
       </div>
 
       <div className="space-y-5">
