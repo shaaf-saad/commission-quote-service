@@ -24,11 +24,6 @@ class QuoteResponse(BaseModel):
     totalCommission: Decimal
 
 
-class ErrorResponse(BaseModel):
-    error: str
-    detail: str | None = None
-
-
 # Base commission rates by risk band (higher risk → higher commission).
 BASE_RATES: dict[RiskBand, Decimal] = {
     RiskBand.A: Decimal("0.0150"),
