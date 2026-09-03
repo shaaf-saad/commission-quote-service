@@ -72,10 +72,10 @@ Browser  →  Web app (:8000)  →  Vendor API (:8001)
               │                      │
               │  /api/quotes         │  POST /quotes
               │  (validates input,   │  requires api-key
-              │   holds API key)     │  ~20% random 503
+              │   holds API key)     │  configurable random 503
 ```
 
-The browser never sees the vendor API key. The web app is a small backend-for-frontend: it validates loan details, calls the vendor with `httpx`, and maps timeouts / 401 / 5xx into user-facing errors. The UI is a React application styled with Tailwind CSS; TanStack Query manages the quote mutation state.
+The browser never sees the vendor API key. The web app is a small backend-for-frontend: it validates loan details, calls the vendor with `httpx`, maps timeouts / 401 / 5xx into banker-safe user-facing errors, and adds an `X-Correlation-ID` response header for support tracing. The UI is a React application styled with Tailwind CSS; TanStack Query manages the quote mutation state.
 
 ### Request flow
 
@@ -97,7 +97,7 @@ The browser never sees the vendor API key. The web app is a small backend-for-fr
 | Mock vendor API | API-key enforcement, deterministic commission calculation, random outages |
 | Shared models | Pydantic contracts, Decimal calculations, and risk-band rules |
 
-For local development, Vite proxies `/api` to the BFF. For GitHub Pages, the static React build uses `VITE_API_BASE_URL` for a separately hosted BFF, or uses the labeled client-side demo mode when that variable is not configured.
+For local development, Vite proxies `/api` to the BFF. Python runs both FastAPI services: the BFF on port `8000` and the mock vendor on port `8001`. For GitHub Pages, the static React build uses `VITE_API_BASE_URL` for a separately hosted BFF, or uses the labeled client-side demo mode when that variable is not configured.
 
 Commission is calculated deterministically in `shared/models.py` so the mock is testable:
 
@@ -153,7 +153,7 @@ cd ..
 
 - `VENDOR_API_KEY` — shared secret the web app sends as the `api-key` header
 - `VENDOR_API_URL` — vendor base URL (`http://127.0.0.1:8001`)
-- `VENDOR_FAILURE_RATE` — probability of a simulated vendor 503 (`0.2` = 20%)
+- `VENDOR_FAILURE_RATE` — probability of a simulated service 503 (`0.2` = 20% by default; use `0.5` for a 50% demo)
 - `VENDOR_TIMEOUT_SECONDS` — web app HTTP timeout when calling the vendor
 - `ALLOWED_ORIGINS` — comma-separated browser origins allowed to call the BFF
 
@@ -199,7 +199,7 @@ If `VITE_API_BASE_URL` is not configured, the Pages workflow enables a clearly l
 
 The vendor API key remains private because it is held by the BFF and is never included in the React build.
 
-If quotes fail with “Unable to reach the Commission Quote API”, the vendor process is not running. If they fail with a 503-style retry message, that is the intentional random outage — submit again.
+If a quote cannot be generated, the banker sees a service-safe message and a single `Reference ID`. Provide that ID to support for investigation; internal vendor details are not exposed in the UI. If the local service is unavailable, confirm both Python processes are running. A 503-style message is the intentional simulated outage — submit again.
 
 To disable random vendor failures while demoing:
 
