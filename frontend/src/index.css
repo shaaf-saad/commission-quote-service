@@ -4,6 +4,20 @@
 :root { font-family: 'DM Sans', sans-serif; color: #e2e8f0; background: #08111f; font-synthesis: none; text-rendering: optimizeLegibility; }
 body { margin: 0; min-width: 320px; background: radial-gradient(circle at 85% 10%, rgba(245, 158, 11, 0.12), transparent 28rem), linear-gradient(135deg, #08111f 0%, #0f1d31 55%, #101827 100%); }
 button, input, select { font: inherit; }
+.nav-button { border: 0; border-radius: 0.45rem; background: transparent; padding: 0.45rem 0.7rem; color: #94a3b8; font-size: 0.8rem; font-weight: 600; cursor: pointer; }
+.nav-button:hover, .nav-button-active { background: rgba(252, 211, 77, 0.12); color: #fcd34d; }
+.eyebrow-text { color: #fcd34d; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; }
+.doc-step { display: flex; gap: 1rem; border-top: 1px solid rgba(148, 163, 184, 0.16); padding: 1rem 0; }
+.doc-step span { color: #fcd34d; font-family: 'Space Mono', monospace; font-size: 0.75rem; }
+.doc-step p { margin: 0; color: #cbd5e1; line-height: 1.6; }
+.doc-panel { border-left: 1px solid rgba(252, 211, 77, 0.45); padding: 0.2rem 0 0.2rem 1rem; }
+.doc-panel h3 { margin: 0 0 0.45rem; color: #f8fafc; font-size: 1rem; }
+.doc-panel p { margin: 0; color: #94a3b8; font-size: 0.875rem; line-height: 1.6; }
+.doc-table { width: 100%; border-collapse: collapse; min-width: 44rem; text-align: left; }
+.doc-table th, .doc-table td { border-bottom: 1px solid rgba(148, 163, 184, 0.14); padding: 1rem; vertical-align: top; color: #94a3b8; font-size: 0.875rem; line-height: 1.55; }
+.doc-table th { color: #fcd34d; font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; }
+.doc-table td:first-child { color: #f8fafc; font-weight: 600; white-space: nowrap; }
+.doc-step code { color: #fcd34d; }
 .input { width: 100%; border: 1px solid rgba(148, 163, 184, 0.2); border-radius: 0.65rem; background: rgba(15, 23, 42, 0.8); padding: 0.8rem 0.9rem; color: #f8fafc; outline: none; transition: border-color 150ms ease, box-shadow 150ms ease; }
 .input::placeholder { color: #475569; }
 .input:focus { border-color: #fcd34d; box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.14); }
